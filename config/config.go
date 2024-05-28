@@ -15,31 +15,44 @@ type Config struct {
 		Interval    int    `yaml:"interval"`
 		LogPath     string `yaml:"log_path"`
 		SeekFromEnd bool   `yaml:"seek_from_end"`
+		Once        bool   `yaml:"once"`
+		Domain      string `yaml:"domain"`
+		Debug       bool   `yaml:"debug"`
 	} `yaml:"settings"`
+
 	ClickHouse struct {
-		Db          string            `yaml:"db"`
-		Table       string            `yaml:"table"`
-		Host        string            `yaml:"host"`
-		Port        string            `yaml:"port"`
-		Columns     map[string]string `yaml:"columns"`
+		Db          string   `yaml:"db"`
+		Table       string   `yaml:"table"`
+		Host        string   `yaml:"host"`
+		Port        string   `yaml:"port"`
+		Columns     []string `yaml:"columns"`
 		Credentials struct {
 			User     string `yaml:"user"`
 			Password string `yaml:"password"`
 		} `yaml:"credentials"`
 	} `yaml:"clickhouse"`
-	Nginx struct {
-		LogType   string `yaml:"log_type"`
-		LogFormat string `yaml:"log_format"`
-	}
+
+	Log struct {
+		Format         string `yaml:"format"`
+		OptionalFields bool   `yaml:"optional_fields"`
+	} `yaml:"log"`
 }
 
 var configPath string
+var logPath string
+var once bool
+var domain string
 
-var NginxTimeLayout = "02/Jan/2006:15:04:05 -0700"
-var CHTimeLayout = "2006-01-02 15:04:05"
+var ApacheTimeLayout = "02/Jan/2006:15:04:05 -0700"
+var CHTimeLayout = "2006-01-02 15:04:00"
+var CHDateLayout = "2006-01-02"
 
 func init() {
 	flag.StringVar(&configPath, "config_path", "config/config.yml", "Config path.")
+	flag.StringVar(&logPath, "log_path", "", "Log path.")
+	flag.BoolVar(&once, "once", false, "Run once against the log then exit")
+	flag.StringVar(&domain, "domain", "", "Domain to use")
+
 	flag.Parse()
 }
 
@@ -57,6 +70,22 @@ func Read() *Config {
 
 	if err = yaml.Unmarshal(data, &config); err != nil {
 		logrus.Fatal("Config read & unmarshal error: ", err)
+	}
+
+	// Update config with environment variables if exist
+	config.SetEnvVariables()
+
+	// Update from command line if specified
+	if logPath != "" {
+		config.Settings.LogPath = logPath
+	}
+
+	if once {
+		config.Settings.Once = once
+	}
+
+	if domain != "" {
+		config.Settings.Domain = domain
 	}
 
 	return &config
@@ -79,6 +108,14 @@ func (c *Config) SetEnvVariables() {
 		}
 
 		c.Settings.Interval = flushInterval
+	}
+
+	if os.Getenv("DOMAIN") != "" {
+		c.Settings.Domain = os.Getenv("DOMAIN")
+	}
+
+	if os.Getenv("DEBUG") != "" {
+		c.Settings.LogPath = os.Getenv("DEBUG")
 	}
 
 	// ClickHouse
@@ -107,13 +144,13 @@ func (c *Config) SetEnvVariables() {
 		c.ClickHouse.Credentials.Password = os.Getenv("CLICKHOUSE_PASSWORD")
 	}
 
-	// Nginx
+	// Log
 
-	if os.Getenv("NGINX_LOG_TYPE") != "" {
-		c.Nginx.LogType = os.Getenv("NGINX_LOG_TYPE")
+	if os.Getenv("LOG_FORMAT") != "" {
+		c.Log.Format = os.Getenv("LOG_FORMAT")
 	}
 
-	if os.Getenv("NGINX_LOG_FORMAT") != "" {
-		c.Nginx.LogFormat = os.Getenv("NGINX_LOG_FORMAT")
+	if os.Getenv("LOG_OPTIONAL_FIELDS") != "" {
+		c.Log.OptionalFields = true
 	}
 }

@@ -1,0 +1,48 @@
+# Settings
+settings:
+  interval: 5
+  log_path: access_log
+  seek_from_end: false
+  # domain: saltthepass.com
+  # once: true
+  # debug: true
+
+# ClickHouse Credentials and Columns
+clickhouse:
+  db: metrics
+  table: s3_logs
+  host: clickhouse.h.nicj.net
+  port: 80
+  credentials:
+    user: default
+    password:
+  columns:
+    - bucket
+    - time_local
+    - date
+    - remote_addr
+    - ssl_protocol
+    - ssl_cipher
+    - http_host
+    - operation
+    - method
+    - url
+    - url_extension
+    - http_version
+    - status
+    - body_bytes_sent
+    - duration
+    - error_code
+    - referrer_domain
+    - user_agent_family
+    - user_agent_major
+    - os_family
+    - os_major
+    - device_family
+    - country
+    - bot
+
+# S3
+log:
+  format: $bucket_owner $bucket [$time_local] $remote_addr $requester $request_id $operation $key "$method $url $http_version" $status $error_code $body_bytes_sent $object_size $duration $turn_around_time "$http_referer" "$http_user_agent" $version_id $host_id $sig_version $ssl_cipher $auth_type $http_host $ssl_protocol $arn $acl_required
+  optional_fields: true

@@ -1,28 +1,146 @@
 # Settings
 settings:
   interval: 5 # in seconds
-  log_path: logs/test.log # path to logfile
+  log_path: access_log # path to logfile
   seek_from_end: false # start reading from the lasl line (to prevent duplicates after restart)
-# ClickHouse credentials
-clickhouse:
- db: metrics
- table: nginx
- host: localhost
- port: 8123
- credentials:
-  user: default
-  password:
- columns:
-   RemoteAddr: remote_addr
-   RemoteUser: remote_user
-   TimeLocal: time_local
-   Request: request
-   Status: status
-   BytesSent: bytes_sent
-   HttpReferer: http_referer
-   HttpUserAgent: http_user_agent
+  once: false # whether to read the file once and exit
+  domain: test.com # domain name to use
+  debug: false # debug log level
 
-# NGINX
-nginx:
-  log_type: main
-  log_format: $remote_addr - $remote_user [$time_local] "$request" $status $bytes_sent "$http_referer" "$http_user_agent"
+# ClickHouse Credentials and Columns
+clickhouse:
+  db: metrics # Database name
+  table: apache_logs # Table name
+  host: localhost # ClickHouse host
+  port: 8123 # ClicHhouse HTTP port
+  credentials:
+    user: default # User name
+    password: # User password
+  columns:
+    #
+    # Apache
+    #
+    - domain
+    - remote_addr
+    - remote_user
+    - time_local
+    - date
+    - method
+    - url
+    - url_extension
+    - http_version
+    - status
+    - body_bytes_sent
+    - referrer
+    - referrer_domain
+    - user_agent
+    - user_agent_family
+    - user_agent_major
+    - os_family
+    - os_major
+    - device_family
+    - country
+    - bot
+
+    #
+    # Nginx
+    #
+    # - domain
+    # - remote_addr
+    # - remote_user
+    # - time_local
+    # - date
+    # - method
+    # - url
+    # - url_extension
+    # - http_version
+    # - status
+    # - body_bytes_sent
+    # - referrer
+    # - referrer_domain
+    # - user_agent
+    # - user_agent_family
+    # - user_agent_major
+    # - os_family
+    # - os_major
+    # - device_family
+    # - country
+    # - bot
+
+    #
+    # CloudFront
+    #
+    # - domain
+    # - remote_addr
+    # - time_local
+    # - date
+    # - cluster
+    # - distribution
+    # - protocol
+    # - ssl_protocol
+    # - ssl_cipher
+    # - http_host
+    # - method
+    # - url
+    # - url_extension
+    # - http_version
+    # - status
+    # - response_status
+    # - body_bytes_sent
+    # - duration
+    # - request_bytes_received
+    # - content_type
+    # - referrer_domain
+    # - user_agent_family
+    # - user_agent_major
+    # - os_family
+    # - os_major
+    # - device_family
+    # - country
+    # - bot
+
+    #
+    # S3
+    #
+    # - bucket
+    # - time_local
+    # - date
+    # - remote_addr
+    # - ssl_protocol
+    # - ssl_cipher
+    # - http_host
+    # - operation
+    # - method
+    # - url
+    # - url_extension
+    # - http_version
+    # - status
+    # - body_bytes_sent
+    # - duration
+    # - error_code
+    # - referrer_domain
+    # - user_agent_family
+    # - user_agent_major
+    # - os_family
+    # - os_major
+    # - device_family
+    # - country
+    # - bot
+
+# Apache
+log:
+  format: $remote_ip - $remote_user [$time_local] "$method $url" $status $bytes "$http_referer" "$http_user_agent"
+
+# Nginx
+# log:
+#   format: $remote_ip - $remote_user [$time_local] "$method $url" $status $bytes "$http_referer" "$http_user_agent"
+
+# CloudFront
+# log:
+#   format: "$date\t$time\t$cluster\t$body_bytes_sent\t$remote_addr\t$method\t$distribution\t$url\t$status\t$http_referer\t$http_user_agent\t$query_string\t$cookie\t$response_status\t$request_id\t$http_host\t$protocol\t$request_bytes_received\t$duration\t$xff\t$ssl_protocol\t$ssl_cipher\t$response_result_status\t$http_version\t$fle_status\t$fle_fields\t$c_port\t$ttfb\t$result_type\t$content_type\t$content_len\t$range_start\t$range_end"
+#   optional_fields: true
+
+# S3
+# log:
+#   format: $bucket_owner $bucket [$time_local] $remote_addr $requester $request_id $operation $key "$method $url $http_version" $status $error_code $body_bytes_sent $object_size $duration $turn_around_time "$http_referer" "$http_user_agent" $version_id $host_id $sig_version $ssl_cipher $auth_type $http_host $ssl_protocol $arn $acl_required
+#   optional_fields: true

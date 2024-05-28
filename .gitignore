@@ -1,14 +1,3 @@
-# Glide packages
-vendor/
-glide.lock
-
-# Idea
-.idea/
-
-# logs
-logs/*.log
-
-# Config
+access*_log* 
+*.exe
 config.yml
-
-nginx-clickhouse

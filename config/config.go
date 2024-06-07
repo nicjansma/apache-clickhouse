@@ -16,6 +16,7 @@ type Config struct {
 		LogPath     string `yaml:"log_path"`
 		SeekFromEnd bool   `yaml:"seek_from_end"`
 		Once        bool   `yaml:"once"`
+		StdIn       bool   `yaml:"stdin"`
 		Domain      string `yaml:"domain"`
 		Debug       bool   `yaml:"debug"`
 	} `yaml:"settings"`
@@ -41,6 +42,7 @@ type Config struct {
 var configPath string
 var logPath string
 var once bool
+var stdin bool
 var domain string
 
 var ApacheTimeLayout = "02/Jan/2006:15:04:05 -0700"
@@ -51,6 +53,7 @@ func init() {
 	flag.StringVar(&configPath, "config_path", "config/config.yml", "Config path.")
 	flag.StringVar(&logPath, "log_path", "", "Log path.")
 	flag.BoolVar(&once, "once", false, "Run once against the log then exit")
+	flag.BoolVar(&stdin, "stdin", false, "Read from stdin then exit")
 	flag.StringVar(&domain, "domain", "", "Domain to use")
 
 	flag.Parse()
@@ -82,6 +85,10 @@ func Read() *Config {
 
 	if once {
 		config.Settings.Once = once
+	}
+
+	if stdin {
+		config.Settings.StdIn = stdin
 	}
 
 	if domain != "" {

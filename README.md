@@ -28,6 +28,7 @@ Improvemnts from [nginx-clickhouse](https://github.com/mintance/nginx-clickhouse
   * Amazon S3 Access Logs
   * (+any other log that can be processed with simple regexs)
 * Ability to run `-once` on a file and exit (bulk loading historical data)
+* Ability to read from `-stdin`
 * Ability to specify the `-domain xyz.com` from the command line and/or `config.yml`
 * Flexible ClickHouse column definitions and custom parsing based on the column name
 * Apache, nginx, CloudFront and S3-focused Grafana dashboards

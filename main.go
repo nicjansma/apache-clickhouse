@@ -63,10 +63,22 @@ func main() {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	logrus.Info("Trying to open logfile: " + config.Settings.LogPath)
+	if config.Settings.StdIn {
+		logrus.Info("Reading from standard input")
 
-	if !config.Settings.Once {
+		// read all of stdin
+		s := bufio.NewScanner(os.Stdin)
+		for s.Scan() {
+			logs = append(logs, s.Text())
+		}
+
+		processLogs(config, apacheParser)
+
+	} else if !config.Settings.Once {
 		whenceSeek := io.SeekStart
+
+		logrus.Info("Trying to open logfile: " + config.Settings.LogPath)
+
 		if config.Settings.SeekFromEnd {
 			whenceSeek = io.SeekEnd
 		}
@@ -99,7 +111,7 @@ func main() {
 		}
 
 	} else {
-		logrus.Info("Scanning file once")
+		logrus.Info("Scanning file once: " + config.Settings.LogPath)
 
 		logs = readFileOnce(config.Settings.LogPath)
 		if logs != nil {

@@ -92,10 +92,21 @@ apache-clickhouse -config_path [config.yml or path] [-once] -log_path [path] -do
 
 #### Run from Docker
 
+In the container:
+
+* `/apache-clickhouse` is the binary
+* `/config.yml` is the default config file location
+* `/logs/access_log` is the default log to read from
+
+These can be changed by running with a different command line or environment variables.
+
 ```sh
 docker pull nicjansma/apache-clickhouse
 
-docker run --rm --name apache-clickhouse -v /var/log:/logs -v config:/config -d nicjansma/apache-clickhouse
+docker run --rm --name apache-clickhouse -v ${PWD}/logs:/logs -v ${PWD}/config.yml:/config.yml nicjansma/apache-clickhouse
+
+# or full command
+docker run --rm --name apache-clickhouse -v ${PWD}/logs:/logs -v ${PWD}/config.yml:/config.yml nicjansma/apache-clickhouse /apache-clickhouse -config_path /config.yml -log_path /logs/access_log
 ```
 
 ## Configuration

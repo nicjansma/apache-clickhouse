@@ -38,7 +38,7 @@ func processLogs(config *config.Config, apacheParser *gonx.Parser) {
 		err := clickhouse.Save(config, apache.ParseLogs(apacheParser, logs))
 
 		if err != nil {
-			logrus.Error("Can`t save logs: ", err)
+			logrus.Error("Can't save logs: ", err)
 		} else {
 			logrus.Info("Saved ", len(logs), " new logs.")
 		}
@@ -56,7 +56,7 @@ func main() {
 	apacheParser, err := apache.GetParser(config)
 
 	if err != nil {
-		logrus.Fatal("Can`t parse apache log format: ", err)
+		logrus.Fatal("Can't parse apache log format: ", err)
 	}
 
 	if config.Settings.Debug {
@@ -90,7 +90,7 @@ func main() {
 		})
 
 		if err != nil {
-			logrus.Fatal("Can`t tail logfile: ", err)
+			logrus.Fatal("Can't tail logfile: ", err)
 		}
 
 		go func() {

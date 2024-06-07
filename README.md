@@ -2,7 +2,7 @@
 
 [![License: Apache 2](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/nicjansma/apache-clickhouse/blob/master/LICENSE)
 ![Golang Version](https://img.shields.io/badge/golang-1.5%2B-blue.svg)
-[![Docker Build Status](https://img.shields.io/docker/build/nicjansma/apache-clickhouse.svg)](https://hub.docker.com/r/nicjansma/apache-clickhouse/)
+[![Docker](https://img.shields.io/docker/v/nicjansma/apache-clickhouse)](https://hub.docker.com/r/nicjansma/apache-clickhouse/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/nicjansma/apache-clickhouse.svg)](https://hub.docker.com/r/nicjansma/apache-clickhouse/)
 [![Docker Stars](https://img.shields.io/docker/stars/nicjansma/apache-clickhouse.svg)](https://hub.docker.com/r/nicjansma/apache-clickhouse/)
 [![GitHub issues](https://img.shields.io/github/issues/nicjansma/apache-clickhouse.svg)](https://github.com/nicjansma/apache-clickhouse/issues)
